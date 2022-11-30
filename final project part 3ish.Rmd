@@ -99,6 +99,12 @@ plot(effect("ros", reg6))
 
 
 ```{r}
+bptest(reg6)
+```
+
+This model was not used!!
+
+```{r}
 reg7 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + I(pcroe^2) + finance + indus + utility, df)
 
 stargazer(reg7, type = "text")
