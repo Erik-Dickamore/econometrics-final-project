@@ -1,0 +1,83 @@
+---
+title: "Final Project Part 4"
+author: "Madalyn Moulton"
+date: "`r Sys.Date()`"
+output: word_document
+---
+```{r}
+library(wooldridge)
+library(stargazer)
+library(car)
+```
+
+# Part 4
+## Regression Results
+Model used for predictions:$\widehat{ceosal} = \hat\beta_1roe+\hat\beta_2ros+\hat\beta_3ros^2+\hat\beta_4sales+\hat\beta_5sales^2+\hat\beta_6pcroe+\hat\beta_7finance+\hat\beta_8indus+\hat\beta_9utility$
+
+```{r}
+reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+stargazer(reg6, type = "text")
+```
+Our equation for estimation is $\widehat{ceosal} = 6.758+ 0.008roe+0.002ros-0.00001ros^2+0.00004sales-0.000sales^2+0.0004pcroe-0.062finance-0.231indus-0.520utility$
+
+Our $R^2 = 0.320$ and $\bar{R}^2 = 0.289$, with 199 degrees of freedom and 209 observations.
+
+Our base for the industry category is consumer product. 
+
+#Intepreting Regression Results ((Coefficients, R2, adjusted-R2, F and t statistics, and etc)
+
+**Coefficients**
+
+$\hat\beta_1 = 0.008$, which means that when return on equity increases by 1 unit the CEO's salary is predicted to increase by $\$8$. (0.008*1000 = 8)
+
+$\hat\beta_2 = 0.002$, which means that when return on stock increases by 1 unit the CEO's salary is predicted to increase by $\$2$. (0.002*1000 = 2)
+
+$\hat\beta_3 = -0.00001$, which means that when $roe^2$ increases by 1 unit the CEO's salary is predicted to decrease by $\$0.01$. (0.00001*1000 = 0.01)
+
+$\hat\beta_4 = 0.00004$, which means that when sales increases by 1 unit the CEO's salary is predicted to increase by $\$0.04$. (0.00004*1000 = 0.04)
+
+$\hat\beta_5 = -0.000$, which means that when $sales^2$ increases by 1 unit the CEO's salary is predicted to decrease by $\$0.00$. (0.000*1000 = 0.00)
+
+$\hat\beta_6 = 0.0004$, which means that when pcroe increases by 1 unit the CEO's salary is predicted to increase by $\$0.40$. (0.0004*1000 = 0.40)
+
+$\hat\beta_7 = -0.062$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$62$ relative to a consumer product firm which is our base variable. (0.062*1000 = 62)
+
+$\hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
+
+$\hat\beta_9 = -0.520$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$520$ relative to a consumer product firm which is our base variable. (0.520*1000 = 520)
+
+**$R^2$, Adjusted $R^2$, and F-Statistics**
+$R^2 = 0.320$ which means that 32% of the variability within the data is explained by our regression equation, which isn't super high. We interpret this to mean that there are other variables that reflect a large portion of the variability that we don't have in the data. 
+
+$\bar{R^2} = 0.289$ which is lower because we have more variables and your adjusted $r^2$ is penalized by more variables. However the difference is very small compared to the normal $R^2$
+
+$F-Statistic = 10.409$ which shows the joint significance of the variables. At least one independent variable is related to Y, in our case CEO salary. 
+
+**Hypothesis Testing**
+```{r}
+#Test the hypothesis that ROE has a higher impact than any other variable. 
+linearHypothesis(reg6, c('roe-ros-I(ros^2)-sales-I(sales^2)-pcroe-finance-indus-utility=0'))
+```
+```{r}
+#Does roe have a greater impact on CEO salary than ros?
+linearHypothesis(reg6, c('roe-ros=0'))
+```
+```{r}
+#Test the hypothesis that industry has a large impact on the CEO's salary.
+linearHypothesis(reg6, c('finance=0','indus=0','utility=0'))
+```
+
+**Confidence Intervals**
+```{r}
+confint(reg6, level =  1-.05)
+```
+Our confidence intervals at a 95% confidence level is shown in the table above for each variable. 
+
+
+**Test for Heteroskedasticity**
+
+```{r}
+bptest(reg6)
+```
+Our p-value is above 0.05 so we can say that there is not heteroskedasticity present.
+
