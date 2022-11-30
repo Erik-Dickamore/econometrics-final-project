@@ -1,0 +1,151 @@
+---
+title: "Untitled"
+author: "Justin Skidmore"
+date: "2022-11-29"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(comment = NA)
+```
+
+```{r include=FALSE}
+library(wooldridge)
+library(stargazer)
+library(dplyr)
+library(lmtest)
+library(car)
+library(effects)
+```
+
+
+
+```{r}
+df <- ceosal1
+
+head(ceosal1)
+
+```
+
+
+```{r}
+reg <- lm(salary~ roe + ros + sales,df)
+stargazer(reg, type = "text")
+
+```
+
+```{r}
+reg2 <- lm(log(salary)~ roe + ros + sales, df)
+stargazer(reg,reg2,type = "text")
+```
+
+We would use log-level based on our inputes since $R^2$ is .032 compared to the .14 for level-level.
+
+
+```{r}
+bptest(reg)
+bptest(reg2)
+```
+
+
+```{r}
+reg3 <- lm(lsalary~ roe + ros + sales + pcroe + finance + indus + utility, df)
+
+stargazer(reg3, type = "text")
+```
+```{r}
+bptest(reg3)
+```
+
+```{r}
+reg4 <- lm(lsalary~ roe + I(roe^2) + ros + sales + pcroe + finance + indus + utility, df)
+
+stargazer(reg4, type = "text")
+
+plot(effect("roe", reg4))
+```
+We wanted to test if 
+
+
+```{r}
+reg5 <- lm(lsalary~ roe + ros + sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+
+stargazer(reg5, type = "text")
+
+plot(effect("sales", reg5))
+```
+```{r}
+linearHypothesis(reg5, c("roe","pcroe"))
+```
+We decided to keep the pcroe. It might not be independently significant but it is jointly significant with pcroe.
+
+```{r}
+vif(reg5)
+```
+
+```{r}
+bptest(reg5)
+```
+
+ 
+```{r}
+reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+
+stargazer(reg6, type = "text")
+
+plot(effect("ros", reg6))
+
+```
+
+
+```{r}
+reg7 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + I(pcroe^2) + finance + indus + utility, df)
+
+stargazer(reg7, type = "text")
+
+plot(effect("pcroe", reg7))
+```
+
+
+reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+
+
+
+#THE PAPER
+
+
+The first assumption (MLR.1) is that our model is linear in parameters. All of our regressions are linear in parameters. The second assumption (MLR.2) is that of random sampling. We can reasonably assume that our study was conducted with random sampling. The third assumption (MLR. 3) is no perfect collinearity and although we have a mild multiplicity between a few of our variables there is no perfect collinearity. The fourth assumption (MLR. 4) is zero conditional mean. This will be true for our model. The fifth assumption of homoscedasticity will hold, we tested by the BP test for reg5 (see results). The sample size should be large enough that we don't need assumption # 6. Because all of the assumptions hold, OLS is the Best Linear Unbiased Estimator. Our regression will use OLS.
+
+
+## Models 1 & 2
+
+We know that there are many factors that effect the CEO salary, so these first two models were to be a baseline  to compare against future models, we can also determine whether to use level-level or the log-level form of the models.
+
+
+Model 1:   $Salary = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales$
+
+Model 2:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales$
+
+When we compare the two models, $R^2$ for model 1 was .032, while for model 2 it was .14. This proves that the log-level model is preferred because it can model the diminished returns. For future models we now know to us the log-level model.
+
+## Model 3 & 4
+
+In our Model 3 we added all the variables from ceosal1 to see what was significant and what wasn't. To our surprise only one was not significant. We decided to take out pcroe, to our surprise again $R^2$ decreased. We did the LinearHypothesis test with "roe" and "pcroe," and it turned out they were jointly significant. We decided to keep pcroe for future models.
+
+Model 3:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+
+Model 4:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales +  \beta_5indus + \beta_6finance + \beta_7utility$
+
+## Model 5 & 6
+
+
+In our Model 5 we tried to include a quadratic variable to see the effect on salary. We squared ROE but seemed to have no effect. In our Model 6 we squared sales which raised our $R^2$ to .296.
+
+Model 5:  $log(Salary) = \beta_0 + \beta_2roe + \beta_2roe^2 + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+
+Model 6:  $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros + \beta_4sales + \beta_4sales^2 + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+
+## Model 7
+
+$log(Salary) = \beta_0 + \beta_1roe + \beta_2ros + \beta_3sales + \beta_4pcroe + \beta_5indus + \beta_6finance + \beta_7utility + \beta_8sales^2 + \beta_9roe^2$
+
