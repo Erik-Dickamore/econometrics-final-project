@@ -6,25 +6,218 @@ output: word_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(include = FALSE)
 ```
 
-## R Markdown
+# Introduction
+The question we are examining is “how does a company’s performance impact the salary of the CEO?” We will be looking specifically at how return on equity and return on stock affect the salary of CEOs. We want to see if the positive metrics associated with increased salary have a negative impact with a decrease as well i.e. is there a linear relationship or some non-linear relationship. We would also like to see how industry plays a role in the relationship between salary and salary growth of the CEO. This is an interesting question because the CEOs primary purpose is to expand and increase profitability and stock price within a company, and it will be interesting to see if the data supports the idea that CEOs should be paid according to their performance. 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+# Data 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+# Emperical Framework
+```{r include=FALSE}
+library(wooldridge)
+library(stargazer)
+library(dplyr)
+library(lmtest)
+library(car)
+library(effects)
 ```
 
-## Including Plots
+```{r}
+df <- ceosal1
 
-You can also embed plots, for example:
+head(ceosal1)
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+reg <- lm(salary~ roe + ros + sales,df)
+stargazer(reg, type = "text")
+```
+
+```{r}
+reg2 <- lm(log(salary)~ roe + ros + sales, df)
+stargazer(reg,reg2,type = "text")
+```
+
+We would use log-level based on our inputes since $R^2$ is .032 compared to the .14 for level-level.
+
+```{r}
+bptest(reg)
+bptest(reg2)
+```
+
+```{r}
+reg3 <- lm(lsalary~ roe + ros + sales + pcroe + finance + indus + utility, df)
+
+stargazer(reg3, type = "text")
+```
+
+```{r}
+bptest(reg3)
+```
+
+```{r}
+reg4 <- lm(lsalary~ roe + I(roe^2) + ros + sales + pcroe + finance + indus + utility, df)
+
+stargazer(reg4, type = "text")
+
+plot(effect("roe", reg4))
+```
+We wanted to test if 
+
+```{r}
+reg5 <- lm(lsalary~ roe + ros + sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+
+stargazer(reg5, type = "text")
+
+plot(effect("sales", reg5))
+```
+
+```{r}
+linearHypothesis(reg5, c("roe","pcroe"))
+```
+We decided to keep the pcroe. It might not be independently significant but it is jointly significant with pcroe.
+
+```{r}
+vif(reg5)
+```
+
+```{r}
+bptest(reg5)
+```
+
+```{r}
+reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+
+stargazer(reg6, type = "text")
+
+plot(effect("ros", reg6))
+
+```
+
+```{r}
+bptest(reg6)
+```
+
+This model was not used!!
+
+```{r}
+reg7 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + I(pcroe^2) + finance + indus + utility, df)
+
+stargazer(reg7, type = "text")
+
+plot(effect("pcroe", reg7))
+```
+
+reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+
+#THE PAPER
+The first assumption (MLR.1) is that our model is linear in parameters. All of our regressions are linear in parameters. The second assumption (MLR.2) is that of random sampling. We can reasonably assume that our study was conducted with random sampling. The third assumption (MLR. 3) is no perfect collinearity and although we have a mild multiplicity between a few of our variables there is no perfect collinearity. The fourth assumption (MLR. 4) is zero conditional mean. This will be true for our model. The fifth assumption of homoscedasticity will hold, we tested by the BP test for reg5 (see results). The sample size should be large enough that we don't need assumption # 6. Because all of the assumptions hold, OLS is the Best Linear Unbiased Estimator. Our regression will use OLS.
+
+## Models 1 & 2
+We know that there are many factors that effect the CEO salary, so these first two models were to be a baseline  to compare against future models, we can also determine whether to use level-level or the log-level form of the models.
+
+Model 1:   $Salary = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales$
+
+Model 2:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales$
+
+When we compare the two models, $R^2$ for model 1 was .032, while for model 2 it was .14. This proves that the log-level model is preferred because it can model the diminished returns. For future models we now know to us the log-level model.
+
+## Model 3 & 4
+In our Model 3 we added all the variables from ceosal1 to see what was significant and what wasn't. To our surprise only one was not significant. We decided to take out pcroe, to our surprise again $R^2$ decreased. We did the LinearHypothesis test with "roe" and "pcroe," and it turned out they were jointly significant. We decided to keep pcroe for future models.
+
+Model 3:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+
+Model 4:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales +  \beta_5indus + \beta_6finance + \beta_7utility$
+
+## Model 5 & 6
+In our Model 5 we tried to include a quadratic variable to see the effect on salary. We squared ROE but seemed to have no effect. In our Model 6 we squared sales which raised our $R^2$ to .296.
+
+Model 5:  $log(Salary) = \beta_0 + \beta_2roe + \beta_2roe^2 + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+
+Model 6:  $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros + \beta_4sales + \beta_4sales^2 + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+
+## Model 7
+$log(Salary) = \beta_0 + \beta_1roe + \beta_2ros + \beta_3sales + \beta_4pcroe + \beta_5indus + \beta_6finance + \beta_7utility + \beta_8sales^2 + \beta_9roe^2$
+
+# Results
+```{r include=FALSE}
+library(wooldridge)
+library(stargazer)
+library(car)
+```
+
+## Regression Results
+Model used for predictions:$\widehat{ceosal} = \hat\beta_1roe+\hat\beta_2ros+\hat\beta_3ros^2+\hat\beta_4sales+\hat\beta_5sales^2+\hat\beta_6pcroe+\hat\beta_7finance+\hat\beta_8indus+\hat\beta_9utility$
+
+```{r include=FALSE}
+reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+stargazer(reg6, type = "text")
+```
+Our equation for estimation is $\widehat{ceosal} = 6.758+ 0.008roe+0.002ros-0.00001ros^2+0.00004sales-0.000sales^2+0.0004pcroe-0.062finance-0.231indus-0.520utility$
+
+Our $R^2 = 0.320$ and $\bar{R}^2 = 0.289$, with 199 degrees of freedom and 209 observations.
+
+Our base for the industry category is consumer product. 
+
+##Intepreting Regression Results ((Coefficients, R2, adjusted-R2, F and t statistics, and etc)
+
+**Coefficients**
+
+$\hat\beta_1 = 0.008$, which means that when return on equity increases by 1 unit the CEO's salary is predicted to increase by $\$8$. (0.008*1000 = 8)
+
+$\hat\beta_2 = 0.002$, which means that when return on stock increases by 1 unit the CEO's salary is predicted to increase by $\$2$. (0.002*1000 = 2)
+
+$\hat\beta_3 = -0.00001$, which means that when $roe^2$ increases by 1 unit the CEO's salary is predicted to decrease by $\$0.01$. (0.00001*1000 = 0.01)
+
+$\hat\beta_4 = 0.00004$, which means that when sales increases by 1 unit the CEO's salary is predicted to increase by $\$0.04$. (0.00004*1000 = 0.04)
+
+$\hat\beta_5 = -0.000$, which means that when $sales^2$ increases by 1 unit the CEO's salary is predicted to decrease by $\$0.00$. (0.000*1000 = 0.00)
+
+$\hat\beta_6 = 0.0004$, which means that when pcroe increases by 1 unit the CEO's salary is predicted to increase by $\$0.40$. (0.0004*1000 = 0.40)
+
+$\hat\beta_7 = -0.062$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$62$ relative to a consumer product firm which is our base variable. (0.062*1000 = 62)
+
+$\hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
+
+$\hat\beta_9 = -0.520$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$520$ relative to a consumer product firm which is our base variable. (0.520*1000 = 520)
+
+**$R^2$, Adjusted $R^2$, and F-Statistics**
+$R^2 = 0.320$ which means that 32% of the variability within the data is explained by our regression equation, which isn't super high. We interpret this to mean that there are other variables that reflect a large portion of the variability that we don't have in the data. 
+
+$\bar{R^2} = 0.289$ which is lower because we have more variables and your adjusted $r^2$ is penalized by more variables. However the difference is very small compared to the normal $R^2$
+
+$F-Statistic = 10.409$ which shows the joint significance of the variables. At least one independent variable is related to Y, in our case CEO salary. 
+
+##Hypothesis Testing
+```{r}
+#Test the hypothesis that ROE has a higher impact than any other variable. 
+linearHypothesis(reg6, c('roe-ros-I(ros^2)-sales-I(sales^2)-pcroe-finance-indus-utility=0'))
+```
+```{r}
+#Does roe have a greater impact on CEO salary than ros?
+linearHypothesis(reg6, c('roe-ros=0'))
+```
+```{r}
+#Test the hypothesis that industry has a large impact on the CEO's salary.
+linearHypothesis(reg6, c('finance=0','indus=0','utility=0'))
+```
+
+##Confidence Intervals
+```{r}
+confint(reg6, level =  1-.05)
+```
+Our confidence intervals at a 95% confidence level is shown in the table above for each variable. 
+
+
+##Test for Heteroskedasticity
+
+```{r}
+bptest(reg6)
+```
+Our p-value is above 0.05 so we can say that there is not heteroskedasticity present.
+
+
+# Conclusion
