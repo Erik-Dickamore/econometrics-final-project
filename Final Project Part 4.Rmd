@@ -8,6 +8,7 @@ output: word_document
 library(wooldridge)
 library(stargazer)
 library(car)
+library(lmtest)
 ```
 
 # Part 4
@@ -15,10 +16,14 @@ library(car)
 Model used for predictions:$\widehat{ceosal} = \hat\beta_1roe+\hat\beta_2ros+\hat\beta_3ros^2+\hat\beta_4sales+\hat\beta_5sales^2+\hat\beta_6pcroe+\hat\beta_7finance+\hat\beta_8indus+\hat\beta_9utility$
 
 ```{r}
-reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+<<<<<<< HEAD
+reg6 <- lm(lsalary~ roe + ros + I((ros^2)/1000)+ sales+ I((sales^2)/100000) + pcroe + finance + indus + utility, df)
+=======
+reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, wooldridge::ceosal1)
+>>>>>>> 9259878629b08811cd0d4f71fc8d70acdd31ff83
 stargazer(reg6, type = "text")
 ```
-Our equation for estimation is $\widehat{ceosal} = 6.758+ 0.008roe+0.002ros-0.00001ros^2+0.00004sales-0.000sales^2+0.0004pcroe-0.062finance-0.231indus-0.520utility$
+Our equation for estimation is $\widehat{ceosal} = 6.758+ 0.008roe+0.002ros-0.01ros^2+0.00004sales-0.00004sales^2+0.0004pcroe-0.062finance-0.231indus-0.520utility$
 
 Our $R^2 = 0.320$ and $\bar{R}^2 = 0.289$, with 199 degrees of freedom and 209 observations.
 
