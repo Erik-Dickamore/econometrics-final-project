@@ -3,6 +3,7 @@ title: "Final Report"
 author: "Madalyn Moulton"
 date: "`r Sys.Date()`"
 output: word_document
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -171,8 +172,8 @@ library(car)
 ## Regression Results
 Model used for predictions:$\widehat{ceosal} = \hat\beta_1roe+\hat\beta_2ros+\hat\beta_3ros^2+\hat\beta_4sales+\hat\beta_5sales^2+\hat\beta_6pcroe+\hat\beta_7finance+\hat\beta_8indus+\hat\beta_9utility$
 
-```{r include=FALSE}
-reg6 <- lm(lsalary~ roe + ros + I(ros^2)+ sales+ I(sales^2) + pcroe + finance + indus + utility, df)
+```{r echo=TRUE}
+reg6 <- lm(lsalary~ roe + ros + I((ros^2)/1000)+ sales+ I((sales^2)/100000) + pcroe + finance + indus + utility, df)
 stargazer(reg6, type = "text")
 ```
 Our equation for estimation is $\widehat{ceosal} = 6.758+ 0.008roe+0.002ros-0.00001ros^2+0.00004sales-0.000sales^2+0.0004pcroe-0.062finance-0.231indus-0.520utility$
@@ -199,7 +200,7 @@ $\hat\beta_6 = 0.0004$, which means that when pcroe increases by 1 unit the CEO'
 
 $\hat\beta_7 = -0.062$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$62$ relative to a consumer product firm which is our base variable. (0.062*1000 = 62)
 
-$\hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
+$hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
 
 $\hat\beta_9 = -0.520$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$520$ relative to a consumer product firm which is our base variable. (0.520*1000 = 520)
 
@@ -240,3 +241,6 @@ Our p-value is above 0.05 so we can say that there is not heteroskedasticity pre
 
 
 # Conclusion
+Through our analysis, we were able to test our theories and ideas about the relationship between a CEO’s salary and the performance of their firm. We found that there is a positive relationship between performance and CEO salary; however, there are diminishing returns to their performance. 
+
+We also found that consumer product firms will pay CEOs the highest on average holding all else constant, and then in descending order finance firms, industrial firms, and utility firms. Overall, our final equation can explain about 1/3 of the variability within the data.
