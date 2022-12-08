@@ -199,7 +199,7 @@ $\hat\beta_6 = 0.0004$, which means that when pcroe increases by 1 unit the CEO'
 
 $\hat\beta_7 = -0.062$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$62$ relative to a consumer product firm which is our base variable. (0.062*1000 = 62)
 
-$\hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
+$hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
 
 $\hat\beta_9 = -0.520$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$520$ relative to a consumer product firm which is our base variable. (0.520*1000 = 520)
 
