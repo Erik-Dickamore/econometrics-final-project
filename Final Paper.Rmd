@@ -14,6 +14,25 @@ The question we are examining is “how does a company’s performance impact th
 
 # Data 
 
+For our term project, we will be using the dataset “ceosal1” found in the Wooldridge data sets which is a random sample of data reported in the May 6, 1991 issue of Businessweek. The data set includes 209 observations on 12 variables, notably CEO salary, sales, return-on-equity, return-on-stock and industry. 
+
+Here is a list of our variables and how they are measured.Our dependent variable is salary. salary is CEO's 1990 salary measured in thousands of dollars.The rest of the variables are independent variables.Pcsalary is the change in the ceo's salary measured in percentages. Sales is the amount of sales in 1990 for the firm measured in millions of dollars. Roe is the firm's return on equity measured in percentage. Pcroe is the percentage change in roe and ros is the return on the firm's stock.We also have lsalary and lsales which measure the natural log of salary and sales, respectively. Then within our independent variables, we have 4 dummy coded variables for the four firm industries. We have indus which equals 1 if it is an industrial firm, finance which equals 1 if it is a financial firm,and utility which equals 1 if it is a utilities or transport firm. Our base case is that the firm is a consumer product firm, so each of those variables is evaluated against the comparison that the firm is a a consumer product firm. 
+
+```{r}
+library(wooldridge)
+library(ggplot2)
+library(vtable)
+df = ceosal1
+sumtable(df)
+hist(df$salary,500)
+hist(df$sales,1000)
+hist(df$finance)
+hist(df$indus)
+hist(df$utility)
+```
+
+
+
 # Emperical Framework
 ```{r include=FALSE}
 library(wooldridge)
