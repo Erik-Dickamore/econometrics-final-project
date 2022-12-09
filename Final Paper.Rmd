@@ -3,6 +3,7 @@ title: "Final Report"
 author: "Madalyn Moulton"
 date: "`r Sys.Date()`"
 output: word_document
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -199,7 +200,7 @@ $\hat\beta_6 = 0.0004$, which means that when pcroe increases by 1 unit the CEO'
 
 $\hat\beta_7 = -0.062$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$62$ relative to a consumer product firm which is our base variable. (0.062*1000 = 62)
 
-$\hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
+$hat\beta_8 = -0.231`$, which means that when the company is an industrial firm, the CEO's salary is predicted to decrease by $\$231$ relative to a consumer product firm which is our base variable. (0.231*1000 = 231)
 
 $\hat\beta_9 = -0.520$, which means that when the company is a financial firm, the CEO's salary is predicted to decrease by $\$520$ relative to a consumer product firm which is our base variable. (0.520*1000 = 520)
 
@@ -240,3 +241,6 @@ Our p-value is above 0.05 so we can say that there is not heteroskedasticity pre
 
 
 # Conclusion
+Through our analysis, we were able to test our theories and ideas about the relationship between a CEO’s salary and the performance of their firm. We found that there is a positive relationship between performance and CEO salary; however, there are diminishing returns to their performance. 
+
+We also found that consumer product firms will pay CEOs the highest on average holding all else constant, and then in descending order finance firms, industrial firms, and utility firms. Overall, our final equation can explain about 1/3 of the variability within the data.
