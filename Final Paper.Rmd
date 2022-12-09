@@ -139,28 +139,28 @@ The first assumption (MLR.1) is that our model is linear in parameters. All of o
 ## Models 1 & 2
 We know that there are many factors that effect the CEO salary, so these first two models were to be a baseline  to compare against future models, we can also determine whether to use level-level or the log-level form of the models.
 
-Model 1:   $Salary = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales$
+Model 1:   $Salary = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales + u$
 
-Model 2:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales$
+Model 2:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales +u$
 
 When we compare the two models, $R^2$ for model 1 was .032, while for model 2 it was .14. This proves that the log-level model is preferred because it can model the diminished returns. For future models we now know to us the log-level model.
 
 ## Model 3 & 4
 In our Model 3 we added all the variables from ceosal1 to see what was significant and what wasn't. To our surprise only one was not significant. We decided to take out pcroe, to our surprise again $R^2$ decreased. We did the LinearHypothesis test with "roe" and "pcroe," and it turned out they were jointly significant. We decided to keep pcroe for future models.
 
-Model 3:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+Model 3:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility+u$
 
-Model 4:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales +  \beta_5indus + \beta_6finance + \beta_7utility$
+Model 4:   $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros +\beta_4sales +  \beta_5indus + \beta_6finance + \beta_7utility+u$
 
 ## Model 5 & 6
 In our Model 5 we tried to include a quadratic variable to see the effect on salary. We squared ROE but seemed to have no effect. In our Model 6 we squared sales which raised our $R^2$ to .296.
 
-Model 5:  $log(Salary) = \beta_0 + \beta_2roe + \beta_2roe^2 + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+Model 5:  $log(Salary) = \beta_0 + \beta_2roe + \beta_2roe^2 + \beta_3ros +\beta_4sales + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility+u$
 
-Model 6:  $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros + \beta_4sales + \beta_4sales^2 + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility$
+Model 6:  $log(Salary) = \beta_0 + \beta_2roe + \beta_3ros + \beta_4sales + \beta_4sales^2 + \beta_5pcroe + \beta_6indus + \beta_7finance + \beta_8utility+u$
 
 ## Model 7
-$log(Salary) = \beta_0 + \beta_1roe + \beta_2ros + \beta_3sales + \beta_4pcroe + \beta_5indus + \beta_6finance + \beta_7utility + \beta_8sales^2 + \beta_9roe^2$
+$log(Salary) = \beta_0 + \beta_1roe + \beta_2ros + \beta_3sales + \beta_4pcroe + \beta_5indus + \beta_6finance + \beta_7utility + \beta_8sales^2 + \beta_9roe^2+u$
 
 # Results
 ```{r include=FALSE}
